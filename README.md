@@ -1,10 +1,11 @@
 # OpenAQ_India
-Hourly average air pollutant values for India cities. 
+Hourly average air pollutant values for Indian cities. 
+
 
 ## Description
-This is a batch processing ETL pipeline which is aimed to give hourly average values for different air pollutants being measured at Indian cities, updated on daily basis.  
+This is a batch processing ETL pipeline which is aimed to give hourly average values for different air pollutants being measured at Indian cities, updated on a daily basis.  
 
-I used data made available by OpenAQ. Read more about the platform at - https://openaq.org/ 
+I used data made available by [OpenAQ](https://openaq.org/) . 
 
 
 ## Architecture
