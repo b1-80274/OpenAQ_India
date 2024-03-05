@@ -8,6 +8,7 @@ I used data made available by OpenAQ. Read more about the platform at - https://
 
 
 ## Architecture
+![PipeLine Architecture](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Architecture.png)
 
 
 ## Development 
