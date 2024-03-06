@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import year, current_date, date_format, avg, round
+from pyspark.sql.functions import year, current_date, date_format, avg, round, to_timestamp
 
 # creating a spark session
 spark = SparkSession.builder \
@@ -24,7 +24,7 @@ recent_df = wrh_data.filter(year('utc') == year(current_date()))
 recent_df = recent_df.withColumn('utc', date_format('utc', 'yyyy-MM-dd hh:00:00'))
 hourly_df = recent_df.groupBy(['locationId', 'utc', 'parameter']) \
     .agg((avg('value')).alias('hourly_avg')) \
-    .select('locationId', 'utc', 'parameter', round('hourly_avg', 2).alias('hourly_avg_value'))\
+    .select('locationId', to_timestamp('utc').alias('utc_timestamp'), 'parameter', round('hourly_avg', 2).alias('hourly_avg_value'))\
     .drop_duplicates()
 
 # Dump to HDFS

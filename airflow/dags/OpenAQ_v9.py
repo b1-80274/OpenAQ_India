@@ -12,12 +12,13 @@ def extract_data(date1):
     import requests
     from datetime import datetime, timedelta
 
+    # hitting the api and getting the data for the location_id and parameter
     def save_data(parameter, location_id, tries):
         print()
         url = f"https://api.openaq.org/v2/measurements?location_id={location_id}&parameter={parameter}&date_from={date1}&date_to={date2}&limit=1000"
         print(url)
         response = requests.get(url)
-        if response.status_code == 200:
+        if response.status_code == 200: # successful hit
             print(f'Hit Success on location_id = {location_id} parameter = {parameter}')
             # Access the response data in JSON format
             data = response.json()
@@ -31,7 +32,7 @@ def extract_data(date1):
             else:
                 print(f' -> -> Nothing on {url}')
             time.sleep(1)
-        else:
+        else: # hit error
             print(
                 f" >>>>>>>> Error in hit on location_id = {location_id} parameter = {parameter} tries = {tries} : {response.status_code}")
             if tries < 3:
@@ -79,13 +80,13 @@ def extract_data(date1):
     # get the execution date of the DAG
     print(f'date1 = {date1}')
     date1 = date1[0:10]
-    date1 = datetime.strptime(date1, '%Y-%m-%d').date()
-    date2 = date1 + timedelta(days=1)
+    date1 = datetime.strptime(date1, '%Y-%m-%d').date() # dag execution date
+    date2 = date1 + timedelta(days=1) #next_day
 
     date1 = str(date1)[:10]
     date2 = str(date2)[:10]
 
-    # hitting the api and getting the data for the dates
+
     dy = date1[-2:]
     mnt = date1[5:7]
     yr = date1[:4]
