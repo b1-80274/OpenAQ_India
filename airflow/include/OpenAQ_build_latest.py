@@ -21,7 +21,7 @@ wrh_data = spark.read \
 recent_df = wrh_data.filter(year('utc') == year(current_date()))
 
 # aggregate for hourly average value
-recent_df = recent_df.withColumn('utc', date_format('utc', 'yyyy-MM-dd hh:00:00'))
+recent_df = recent_df.withColumn('utc', date_format('utc', 'yyyy-MM-dd HH:00:00'))
 hourly_df = recent_df.groupBy(['locationId', 'utc', 'parameter']) \
     .agg((avg('value')).alias('hourly_avg')) \
     .select('locationId', to_timestamp('utc').alias('utc_timestamp'), 'parameter', round('hourly_avg', 2).alias('hourly_avg_value'))\
