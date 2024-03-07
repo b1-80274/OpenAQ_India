@@ -71,5 +71,5 @@ Using PySpark dataframes, I transformed the above json to select the required fi
 ## Possible Improvents
 
 
-## Contrinutions
+## Contributions
 Huge thanks to OpenAQ for providing the API. 
