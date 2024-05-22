@@ -4,8 +4,7 @@ Hourly average air pollutant values for Indian cities.
 
 ## Description
 This is a batch processing ETL pipeline which is aimed to give hourly average values for different air pollutants being measured at Indian cities, updated on a daily basis.  
-
-I used data made available by [OpenAQ](https://openaq.org/) . 
+Data used is made available by [OpenAQ](https://openaq.org/) . 
 
 
 ## Architecture
@@ -15,14 +14,11 @@ I used data made available by [OpenAQ](https://openaq.org/) .
 ## Development 
 
 ### 1. API
-Let's start with the API first. Here is a list of helpful API documents.
+Here is a list of helpful API documents for reference.
 - https://docs.openaq.org/docs/introduction
 - https://py-openaq.readthedocs.io/en/latest/#
 - https://dhhagan.github.io/py-openaq/tutorial/api.html
 
-I tried to get started with getting the data about the Indian cities via the endpoint `cities`. As per the documentation, it supports a `**kwarg` `country` which requires a 2 character code of a country. But it didn't give any response. OpenAQ has a beautiful [explorer](https://explore.openaq.org/#3.2/26.17/80.54), a web-based dashboard. I hardcoded this data with the help of the explorer.
-
-Instead of using the API endpoints directly, I used `requests` package along with string manipulation due to unrealiable responses from the endpoint `measurements`. 
 
 URL providing the data - 
 
@@ -30,7 +26,7 @@ URL providing the data -
 
 This url string is manipulated for `location_id` , `parameter`, `date_from` and `date_to` with the hardcoded values for India. 
 
-Data available via api URL - 
+Data sample available via api URL - 
 
 ```
 [  
@@ -44,8 +40,7 @@ Data available via api URL -
 ```
 
 ### Data Modelling 
-
-Here, there are 2 dimensions - city(location) and parameter with a central dimension latest(readings). So, I used a Star schema to model the data. 
+There are 3 tables, `city` and `parameter` are 2 dimension tables connected to a central facts table `readings`, forming a star schema model.
 
 ![Data Modelling - Star Schema](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Star_Schema.png)
 
@@ -67,9 +62,16 @@ Using PySpark dataframes, I transformed the above json to select the required fi
 
 
 ## Business Usecases
+- Power BI dashboard can be used to monitor the parameters. This can help to discover recent trends, take data driven decisions and many other data analysis tasks.
+- Warehouse built in the HDFS can accomodate huge amount of data which can be consumed by the data science team to built ML models on it.
 
 ## Possible Improvents
-
+- The `location_id`s and `parameter`s have been hard-coded, but they can be dynamically fetched from the endpoint.
+- The local file system structure used for temperorily storing the data is a bit nested and unnecessary. 
+- The code used for fetching the data from the API is string manipulation using `location_id`s and `parameter`s lists. Better approach is to use  `page` from metadata.
+- The pipeline only uses Indian cities data, but OpenAQ has data for the whole world.
+- Spark has been configured in the runtime (for JDBC connectivity). It can be pre-configured by putting the required JDBC connector jar file in the jars directory of Pyspark.
+ 
 
 ## Contributions
 Huge thanks to OpenAQ for providing the API. 
