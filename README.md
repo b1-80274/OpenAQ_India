@@ -26,7 +26,7 @@ URL providing the data -
 
 This url string is manipulated for `location_id` , `parameter`, `date_from` and `date_to` with the hardcoded values for India. 
 
-Data sample available via api URL - 
+Data sample from the data available via api URL - 
 
 ```
 [  
@@ -47,8 +47,8 @@ There are 3 tables, `city` and `parameter` are 2 dimension tables connected to a
 ### 2. PySpark ETL 
 
 ##### 2.1 HDFS Warehouse
+As the data will come in json, it will be transformed using PySpark to create a dataframe; which will be inserted in the central fact table `readings`. As the values for `locationId` and `parameter` are hard-coded in a dictionary, the 2 fact tables will never be updated for the new values. Hence, they are not touched in the process.
 
-Using PySpark dataframes, I transformed the above json to select the required fields. I dumped the dataframe to HDFS in ORC format.
 
 ##### 2.2 Latest Table
 
@@ -66,9 +66,9 @@ Using PySpark dataframes, I transformed the above json to select the required fi
 - Warehouse built in the HDFS can accomodate huge amount of data which can be consumed by the data science team to built ML models on it.
 
 ## Possible Improvents
+- The code used for fetching the data from the API is string manipulation using `location_id`s and `parameter`s lists. Better approach is to use [pagination](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28).
 - The `location_id`s and `parameter`s have been hard-coded, but they can be dynamically fetched from the endpoint.
 - The local file system structure used for temperorily storing the data is a bit nested and unnecessary. 
-- The code used for fetching the data from the API is string manipulation using `location_id`s and `parameter`s lists. Better approach is to use  `page` from metadata.
 - The pipeline only uses Indian cities data, but OpenAQ has data for the whole world.
 - Spark has been configured in the runtime (for JDBC connectivity). It can be pre-configured by putting the required JDBC connector jar file in the jars directory of Pyspark.
  
