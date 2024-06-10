@@ -13,7 +13,7 @@ Data used is made available by [OpenAQ](https://openaq.org/) .
 
 ## Development 
 
-### 1. API
+### 1. API and Staging Area
 Here is a list of helpful API documents for reference.
 - https://docs.openaq.org/docs/introduction
 - https://py-openaq.readthedocs.io/en/latest/#
@@ -39,22 +39,35 @@ Data sample from the data available via api URL -
 ]
 ```
 
+Function `save_date()` hits the URL and saves json response in the local file system. It also handles the errors like hit limit error (429), bad request (400),etc.
+
 ### Data Modelling 
-There are 3 tables, `city` and `parameter` are 2 dimension tables connected to a central facts table `readings`, forming a star schema model.
+By normalising the json data,3 tables can be created.`city` and `parameter` are 2 dimension tables that needs to be connected to a central facts table `readings`, forming a star schema model.
 
 ![Data Modelling - Star Schema](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Star_Schema.png)
 
 ### 2. PySpark ETL 
 
 ##### 2.1 HDFS Warehouse
-As the data will come in json, it will be transformed using PySpark to create a dataframe; which will be inserted in the central fact table `readings`. As the values for `locationId` and `parameter` are hard-coded in a dictionary, the 2 fact tables will never be updated for the new values. Hence, they are not touched in the process.
+As the data comes in json, using `OpenAQ_extract_transform` script it will be transformed using PySpark to create a dataframe; which will be inserted in the central fact table `readings`. As the values for `locationId` and `parameter` are hard-coded in a dictionary, the 2 dimension tables will never be updated for the new values. Hence, they are not touched in the process.
 
 
 ##### 2.2 Latest Table
+As data will be inserted into the warehouse, it will grow over the time and at some point if this is used for Buissness Intelligence softwares, they can slow down or fail to fetch the data. Hence, a small subset of the warehouse data, specifically latest year data is taken from warehouse and saved to a RDBMS.
+`OpenAQ_build_latest` script reads the `readings` from the warehouse, filters for only latest year readings and writes them to MySQL database table in the overwrite mode.
 
--- Add images
+##### 2.3 Delete Local Data
+The staging data can be deleted using bash script as it is no longer needed.
+
+
+##### 2.4 Wait for SafeMode
+As scripts perform writes to HDFS, it is important to ensure that it has come out of the safe mode. A bashscript is implemented with HDFS admin command and a while loop to check HDFS safemode status and sleep for 10 seconds if HDFS is in the safemode.
+
 
 ### 3. Airflow
+Apache Airflow is used to schedule the whole ETL process. The pipeline is planned to be executed daily, with the **max_active_runs** set to 1, as to avoid API hit limit issues. **catchup** is set to true to overcome local system failure or any other problems of similar sort that might prevent the DAG execution for a particular day.
+
+`dag_run.execution_date` is used to extract the date of the running DAG dynamically. This is an important parameter and used for API hits.
 -- Add images
 
 ### 4. PowerBI
@@ -67,6 +80,7 @@ As the data will come in json, it will be transformed using PySpark to create a 
 
 ## Possible Improvents
 - The code used for fetching the data from the API is string manipulation using `location_id`s and `parameter`s lists. Better approach is to use [pagination](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api?apiVersion=2022-11-28).
+- Partitioning and bucketing can be implemented for the warehouse data in HDFS to provide more optimised storage functionalities.
 - The `location_id`s and `parameter`s have been hard-coded, but they can be dynamically fetched from the endpoint.
 - The local file system structure used for temperorily storing the data is a bit nested and unnecessary. 
 - The pipeline only uses Indian cities data, but OpenAQ has data for the whole world.
