@@ -68,7 +68,8 @@ As scripts perform writes to HDFS, it is important to ensure that it has come ou
 Apache Airflow is used to schedule the whole ETL process. The pipeline is planned to be executed daily, with the **max_active_runs** set to 1, as to avoid API hit limit issues. **catchup** is set to true to overcome local system failure or any other problems of similar sort that might prevent the DAG execution for a particular day.
 
 `dag_run.execution_date` is used to extract the date of the running DAG dynamically. This is an important parameter and used for API hits.
--- Add images
+
+![AirFlow DAG Run](https://github.com/b1-80274/OpenAQ_India/blob/main/images/airflow_openaq_dagrun.png)
 
 ### 4. PowerBI
 -- Add images
