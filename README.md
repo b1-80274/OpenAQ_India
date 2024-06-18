@@ -10,6 +10,8 @@ Data used is made available by [OpenAQ](https://openaq.org/) .
 ## Architecture
 ![PipeLine Architecture](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Architecture.png)
 
+Python is used to get the data from API and store it to the local file system. The data then will be transformed using Apache PySpark to build data warehouse maintained using Hadoop HDFS. A small recent subset of warehouse will be put in MySQL database to be consumed by PowerBI. Except for PowerBI, the whiole process will be automated using Apache Airflow.
+
 
 ## Development 
 
@@ -53,6 +55,8 @@ As the data comes in json, using `OpenAQ_extract_transform` script it will be tr
 
 
 ##### 2.2 Latest Table
+The rate of insertion of records is different for different stations; for example, the stations with `entity` 'Governmental Organization' insert data each hour, while some 'Community Organization' stations insert them at as low as at every 2 minutes.So, to make analysis easier, the data is aggregated to hour.
+
 As data will be inserted into the warehouse, it will grow over the time and at some point if this is used for Buissness Intelligence softwares, they can slow down or fail to fetch the data. Hence, a small subset of the warehouse data, specifically latest year data is taken from warehouse and saved to a RDBMS.
 `OpenAQ_build_latest` script reads the `readings` from the warehouse, filters for only latest year readings and writes them to MySQL database table in the overwrite mode.
 
