@@ -10,7 +10,7 @@ Data used is made available by [OpenAQ](https://openaq.org/) .
 ## Architecture
 ![PipeLine Architecture](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Architecture.png)
 
-Python is used to get the data from API and store it to the local file system. The data then will be transformed using Apache PySpark to build data warehouse maintained using Hadoop HDFS. A small recent subset of warehouse will be put in MySQL database to be consumed by PowerBI. Except for PowerBI, the whiole process will be automated using Apache Airflow.
+Python is used to get the data from API and store it to the local file system. The data then will be transformed using Apache PySpark to build data warehouse maintained using Hadoop HDFS. A small recent subset of warehouse will be put in MySQL database to be consumed by PowerBI. Except for PowerBI, the whole process will be automated using Apache Airflow.
 
 
 ## Development 
@@ -76,7 +76,7 @@ Apache Airflow is used to schedule the whole ETL process. The pipeline is planne
 ![AirFlow DAG Run](https://github.com/b1-80274/OpenAQ_India/blob/main/images/airflow_openaq_dagrun.png)
 
 ### 4. PowerBI
--- Add images
+![Power BI Dashboard](https://github.com/b1-80274/OpenAQ_India/blob/main/images/OpenAQ_Dashboard.png)
 
 
 ## Business Usecases
@@ -93,4 +93,4 @@ Apache Airflow is used to schedule the whole ETL process. The pipeline is planne
  
 
 ## Contributions
-Huge thanks to OpenAQ for providing the API. 
+Huge thanks to [OpenAQ](https://openaq.org/) for providing the API. 
